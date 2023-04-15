@@ -18,7 +18,7 @@ class Category(models.Model):
 class Institution(models.Model):
     name = models.CharField(max_length=64)
     description = models.TextField(null=True)
-    day_name = models.SmallIntegerField(choices=TYPE_CHOICES, default=0, null=False)
+    type = models.SmallIntegerField(choices=TYPE_CHOICES, default=0, null=False)
     categories = models.ManyToManyField(Category)
 
 
