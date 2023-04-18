@@ -2,6 +2,9 @@ from django.shortcuts import render, redirect
 from django.views import View
 from .models import Category, Institution, Donation
 from django.core.paginator import Paginator
+from .forms import RegisterForm
+from django.contrib.auth.models import User
+from django.http import HttpResponse
 
 # Create your views here.
 
@@ -49,6 +52,33 @@ class LandingPage(View):
         return render(request, 'index.html', ctx)
 
 
+class Register(View):
+    def get(self, request):
+        form = RegisterForm()
+        ctx = {'form': form}
+        return render(request, 'register.html', ctx)
+
+    def post(self, request):
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+            username = (first_name + last_name).lower()
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            password_confirmation = form.cleaned_data['password_confirmation']
+            if password == password_confirmation:
+                user = User.objects.create_user(username=username,
+                                                first_name=first_name,
+                                                last_name=last_name,
+                                                email=email,
+                                                password=password)
+                return redirect('login')
+            else:
+                return HttpResponse("Invalid data")
+        return HttpResponse("Invalid data")
+
+
 class AddDonation(View):
     def get(self, request):
         ctx = {'data': "sampledata"}
@@ -61,7 +91,4 @@ class Login(View):
         return render(request, 'login.html', ctx)
 
 
-class Register(View):
-    def get(self, request):
-        ctx = {'data': "sampledata"}
-        return render(request, 'register.html', ctx)
+
