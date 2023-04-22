@@ -2,9 +2,11 @@ from django.shortcuts import render, redirect
 from django.views import View
 from .models import Category, Institution, Donation
 from django.core.paginator import Paginator
-from .forms import RegisterForm
+from .forms import RegisterForm, LoginForm
 from django.contrib.auth.models import User
 from django.http import HttpResponse
+from django.contrib.auth import authenticate, login, logout
+
 
 # Create your views here.
 
@@ -63,8 +65,8 @@ class Register(View):
         if form.is_valid():
             first_name = form.cleaned_data['first_name']
             last_name = form.cleaned_data['last_name']
-            username = (first_name + last_name).lower()
             email = form.cleaned_data['email']
+            username = email
             password = form.cleaned_data['password']
             password_confirmation = form.cleaned_data['password_confirmation']
             if password == password_confirmation:
@@ -79,16 +81,39 @@ class Register(View):
         return HttpResponse("Invalid data")
 
 
+class Login(View):
+    def get(self, request):
+        form = LoginForm()
+        ctx = {'form': form}
+        return render(request, 'login.html', ctx)
+
+    def post(self, request):
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            user = authenticate(username=form.cleaned_data['email'], password=form.cleaned_data['password'])
+            if user is not None:
+                login(request, user)
+                return redirect('landing_page')
+            else:
+                return redirect('register')
+
+
 class AddDonation(View):
     def get(self, request):
-        ctx = {'data': "sampledata"}
+        if request.user.is_authenticated:
+            ctx = {'data': "sampledata",
+                   'logged_user': request.user}
+        else:
+            ctx = {'data': "sampledata"}
         return render(request, 'form.html', ctx)
 
 
-class Login(View):
+class Logout(View):
     def get(self, request):
-        ctx = {'data': "sampledata"}
-        return render(request, 'login.html', ctx)
+        if request.user:
+            logout(request)
+        return redirect('landing_page')
+
 
 
 

@@ -18,6 +18,12 @@ from django.contrib import admin
 from django.urls import path
 
 from donation_app.views import LandingPage, AddDonation, Login, Register
+from donation_app.views import Logout
+
+
+
+
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,4 +31,5 @@ urlpatterns = [
     path('add_donation/', AddDonation.as_view(), name='add_donation'),
     path('login/', Login.as_view(), name='login'),
     path('register/', Register.as_view(), name='register'),
+    path('logout/', Logout.as_view(), name='logout')
 ]

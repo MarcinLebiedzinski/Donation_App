@@ -12,10 +12,16 @@ class RegisterForm(forms.Form):
                                 max_length=150)
     email = forms.EmailField(label='Email',
                              widget=forms.TextInput(attrs={'placeholder': 'Email'}))
-    password = forms.CharField(label='Hasło',
-                               widget=forms.TextInput(attrs={'placeholder': 'Hasło'}),
-                               max_length=128)
-    password_confirmation = forms.CharField(label='Powtórz hasło',
-                                            widget=forms.TextInput(attrs={'placeholder': 'Powtórz hasło'}),
-                                            max_length=128)
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Hasło'}),
+                               label='password', max_length=128)
+    password_confirmation = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Powtórz hasło'}),
+                               label='password_confirmation', max_length=128)
+
+
+class LoginForm(forms.Form):
+    email = forms.EmailField(label='Email',
+                             widget=forms.TextInput(attrs={'placeholder': 'Email'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Hasło'}),
+                               label='password', max_length=128)
+
 
