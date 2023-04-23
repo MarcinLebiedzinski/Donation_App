@@ -6,6 +6,7 @@ from .forms import RegisterForm, LoginForm
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 # Create your views here.
@@ -49,15 +50,19 @@ class LandingPage(View):
                'quantity_of_donations': quantity_of_donations,
                'foundations': foundations,
                'corporates': corporates,
-               'individuals': individuals
-               }
+               'individuals': individuals,
+               'logged_user': request.user,
+               'is_superuser': request.user.is_superuser}
         return render(request, 'index.html', ctx)
 
 
 class Register(View):
     def get(self, request):
         form = RegisterForm()
-        ctx = {'form': form}
+        ctx = {'form': form,
+               'logged_user': request.user,
+               'is_superuser': request.user.is_superuser
+               }
         return render(request, 'register.html', ctx)
 
     def post(self, request):
@@ -84,7 +89,10 @@ class Register(View):
 class Login(View):
     def get(self, request):
         form = LoginForm()
-        ctx = {'form': form}
+        ctx = {'form': form,
+               'logged_user': request.user,
+               'is_superuser': request.user.is_superuser
+               }
         return render(request, 'login.html', ctx)
 
     def post(self, request):
@@ -98,13 +106,15 @@ class Login(View):
                 return redirect('register')
 
 
-class AddDonation(View):
+class AddDonation(LoginRequiredMixin, View):
     def get(self, request):
-        if request.user.is_authenticated:
-            ctx = {'data': "sampledata",
-                   'logged_user': request.user}
-        else:
-            ctx = {'data': "sampledata"}
+        categories = Category.objects.all()
+        institutions = Institution.objects.all()
+        ctx = {'categories': categories,
+               'institutions': institutions,
+               'logged_user': request.user,
+               'is_superuser': request.user.is_superuser
+               }
         return render(request, 'form.html', ctx)
 
 
@@ -115,5 +125,31 @@ class Logout(View):
         return redirect('landing_page')
 
 
+class UserDetails(LoginRequiredMixin, View):
+    def get(self, request):
+        ctx = {'logged_user': request.user,
+               'is_superuser': request.user.is_superuser}
+        return render(request, 'userdetails.html', ctx)
+
+
+class TestView(View):
+    def get(self, request):
+        # wyciągnięcie wszystkich instytucji zawierających kategorię id=1
+        institutions = Institution.objects.filter(categories__id=1)
+        ctx = {'institutions': institutions,
+               'logged_user': request.user,
+               'is_superuser': request.user.is_superuser
+               }
+        return render(request, 'test.html', ctx)
+
+
+# class AddDonation(LoginRequiredMixin, View):
+#     def get(self, request):
+#         if request.user.is_authenticated:
+#             ctx = {'logged_user': request.user,
+#                    'data': "sampledata"}
+#         else:
+#             ctx = {'data': "sampledata"}
+#         return render(request, 'form.html', ctx)
 
 

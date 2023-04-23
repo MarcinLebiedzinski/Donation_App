@@ -14,12 +14,26 @@ TYPE_CHOICES = [
 class Category(models.Model):
     name = models.CharField(max_length=64)
 
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "Kategoria"
+        verbose_name_plural = "Kategorie"
+
 
 class Institution(models.Model):
     name = models.CharField(max_length=64)
     description = models.TextField(null=True)
     type = models.SmallIntegerField(choices=TYPE_CHOICES, default=0, null=False)
     categories = models.ManyToManyField(Category)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "Instytucja"
+        verbose_name_plural = "Instytucje"
 
 
 class Donation(models.Model):
@@ -35,5 +49,10 @@ class Donation(models.Model):
     pick_up_comment = models.TextField()
     user = models.ForeignKey(User, null=True, default=None, on_delete=models.CASCADE) # jak zdefiniować default null
 
+    def __str__(self):
+        return self.id
 
+    class Meta:
+        verbose_name = "Datek"
+        verbose_name_plural = "Datki"
 

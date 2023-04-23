@@ -1,0 +1,12 @@
+<div>
+    <h1>Strona do pisania testów, bzdur etc.</h1>
+    {{ institutions }}
+    {% for institution in institutions %}
+        <p> {{ institution.id }} - {{ institution.name }}</p>
+    {% endfor %}
+
+    {% for category in categories %}
+        <p> {{ category.id }} - {{ category.name }}</p>
+    {% endfor %}
+
+</div>
