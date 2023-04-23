@@ -21,6 +21,7 @@ from donation_app.views import LandingPage, AddDonation, Login, Register
 from donation_app.views import Logout
 from donation_app.views import TestView
 from donation_app.views import UserDetails
+from donation_app.views import ChangeDonationStatus
 
 
 urlpatterns = [
@@ -31,5 +32,6 @@ urlpatterns = [
     path('register/', Register.as_view(), name='register'),
     path('logout/', Logout.as_view(), name='logout'),
     path('testview/', TestView.as_view(), name='testview'),
-    path('userdetails/', UserDetails.as_view(), name='userdetails')
+    path('userdetails/', UserDetails.as_view(), name='userdetails'),
+    path('changestatus/<int:donation_id>/', ChangeDonationStatus.as_view(), name='changestatus'),
 ]

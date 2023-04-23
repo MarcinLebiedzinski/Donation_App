@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 from .models import Category, Institution, Donation
 from django.core.paginator import Paginator
-from .forms import RegisterForm, LoginForm
+from .forms import RegisterForm, LoginForm, AprovingForm, APROVING_CHOICES
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
@@ -127,7 +127,19 @@ class Logout(View):
 
 class UserDetails(LoginRequiredMixin, View):
     def get(self, request):
-        ctx = {'logged_user': request.user,
+        donations = Donation.objects.filter(user_id=request.user.id).order_by('is_taken')
+        donations_list = []
+        for donation in donations:
+            categories_list = Category.objects.filter(donation__id=donation.id)
+            donations_list.append((donation.quantity,
+                                   donation.institution,
+                                   donation.pick_up_date,
+                                   categories_list,
+                                   donation.is_taken,
+                                   donation.id))
+        ctx = {'donations_list': donations_list,
+               'categories_list': categories_list,
+               'logged_user': request.user,
                'is_superuser': request.user.is_superuser}
         return render(request, 'userdetails.html', ctx)
 
@@ -136,11 +148,37 @@ class TestView(View):
     def get(self, request):
         # wyciągnięcie wszystkich instytucji zawierających kategorię id=1
         institutions = Institution.objects.filter(categories__id=1)
+
         ctx = {'institutions': institutions,
                'logged_user': request.user,
                'is_superuser': request.user.is_superuser
                }
         return render(request, 'test.html', ctx)
+
+
+class ChangeDonationStatus(LoginRequiredMixin, View):
+
+    def get(self, request, donation_id):
+        form = AprovingForm()
+        ctx = {'form': form,
+               'logged_user': request.user}
+        return render(request, 'change_status.html', ctx)
+
+    def post(self, request, donation_id):
+        form = AprovingForm(request.POST)
+        if form.is_valid():
+            choice_dict = dict(APROVING_CHOICES)
+            choice = choice_dict[int(form.cleaned_data['choice'])]
+            if choice == 'tak':
+                d = Donation.objects.get(id=donation_id)
+                if d.is_taken:
+                    d.is_taken = False
+                else:
+                    d.is_taken = True
+                d.save()
+            return redirect('userdetails')
+        else:
+            HttpResponse('Coś poszło nie tak')
 
 
 # class AddDonation(LoginRequiredMixin, View):

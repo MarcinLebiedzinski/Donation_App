@@ -32,10 +32,24 @@
 
     <section class="login-page">
       <h2>Profil użytkownika</h2>
-      <h1>Dane użytkownika</h1>
+      <h1><u>Dane użytkownika</u></h1>
       <h1>Imię: {{ logged_user.first_name }}</h1>
       <h1>Nazwisko: {{ logged_user.last_name }} </h1>
       <h1>Email: {{ logged_user.email }} </h1>
+
+      <h1></h1>
+      <h1><u>Lista przekazanych darów</u></h1>
+      {% for donation in donations_list %}
+      <h1> ----------------------------------------- </h1>
+      <h1>{{ donation.0}} worków dla {{ donation.1 }}</h1>
+      <h1>Kategorie: {% for category in donation.3 %} {{ category }} {% endfor %}</h1>
+      <h1>Ustalona data przekazania - {{ donation.2}} </h1>
+      <h1>Odebrano przesyłkę? - {{ donation.4}} -->
+        <a href="{% url 'changestatus' donation.5%}"><i>Zmień</i></a>
+      </h1>
+
+      {% endfor %}
+
     </section>
 
 {% endblock %}

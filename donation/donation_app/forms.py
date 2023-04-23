@@ -25,3 +25,11 @@ class LoginForm(forms.Form):
                                label='password', max_length=128)
 
 
+APROVING_CHOICES = (
+        (1, "tak"),
+        (2, "nie"),
+)
+
+
+class AprovingForm(forms.Form):
+    choice = forms.ChoiceField(choices=APROVING_CHOICES, initial=1, label="Potwierdź")

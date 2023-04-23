@@ -48,6 +48,7 @@ class Donation(models.Model):
     pick_up_time = models.TimeField(null=False)
     pick_up_comment = models.TextField()
     user = models.ForeignKey(User, null=True, default=None, on_delete=models.CASCADE) # jak zdefiniować default null
+    is_taken = models.BooleanField(default=False)
 
     def __str__(self):
         return self.id
@@ -55,4 +56,5 @@ class Donation(models.Model):
     class Meta:
         verbose_name = "Datek"
         verbose_name_plural = "Datki"
+
 
