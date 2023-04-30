@@ -22,7 +22,8 @@ from donation_app.views import Logout
 from donation_app.views import TestView
 from donation_app.views import UserDetails
 from donation_app.views import ChangeDonationStatus
-
+from donation_app.views import ChangeUserDetails
+from donation_app.views import ChangeUserPassword
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,5 +34,8 @@ urlpatterns = [
     path('logout/', Logout.as_view(), name='logout'),
     path('testview/', TestView.as_view(), name='testview'),
     path('userdetails/', UserDetails.as_view(), name='userdetails'),
+    path('changeuserdetails/<int:user_id>/', ChangeUserDetails.as_view(), name='change_user_details'),
     path('changestatus/<int:donation_id>/', ChangeDonationStatus.as_view(), name='changestatus'),
+    path('changeuserpassword/<int:user_id>/', ChangeUserPassword.as_view(), name='change_user_password'),
+
 ]
