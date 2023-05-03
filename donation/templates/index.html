@@ -152,13 +152,17 @@
         <!-- SLIDE 1 PAGINATION -->
         <ul class="help--slides-pagination">
         {% if foundations.has_previous %}
-            <li><a href="?page={{ foundations.previous_page_number }}#help" class="btn btn--without-border">previous</a></li>
+            <li><a href="?page={{ foundations.previous_page_number }}#help"
+                   class="btn btn--without-border"
+                   data-page="?page={{ foundations.previous_page_number }}#help">previous</a></li>
         {% endif %}
             <li class="btn btn--without-border">
                 Page {{ foundations.number }} of {{ foundations.paginator.num_pages }}.
             </li>
         {% if foundations.has_next %}
-            <li><a href="?page={{ foundations.next_page_number }}#help" class="btn btn--without-border">next</a></li>
+            <li><a href="?page={{ foundations.next_page_number }}#help"
+                   class="btn btn--without-border"
+                   data-page="?page={{ foundations.next_page_number }}#help">next</a></li>
         {% endif %}
         </ul>
       </div>

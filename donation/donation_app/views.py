@@ -9,6 +9,7 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+import json
 
 # Create your views here.
 
@@ -111,8 +112,23 @@ class AddDonation(LoginRequiredMixin, View):
     def get(self, request):
         categories = Category.objects.all()
         institutions = Institution.objects.all()
+        institutions_data_list = []
+        for institution in institutions:
+            category_numbers_list = []
+            category_names_list = []
+            for category in Category.objects.filter(institution__id=institution.id):
+                category_numbers_list.append(category.id)
+                category_names_list.append(category.name)
+            institution_dict = {'id': institution.id,
+                                'description': institution.description,
+                                'name': institution.name,
+                                'category_numbers': category_numbers_list,
+                                'category_names': category_names_list
+                                }
+            institutions_data_list.append(institution_dict)
+
         ctx = {'categories': categories,
-               'institutions': institutions,
+               'institutions_data_list': institutions_data_list,
                'logged_user': request.user,
                'is_superuser': request.user.is_superuser
                }
