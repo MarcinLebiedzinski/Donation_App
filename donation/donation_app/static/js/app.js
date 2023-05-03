@@ -259,129 +259,79 @@ document.addEventListener("DOMContentLoaded", function() {
   // deklaracja listy gdzie będą przetrzymywane id kategorii, które zaznaczy użytkownik
   const categoriesList = [];
 
-
-  // Zaczytanie wszystkich obiektów "input" ze wszystkimi kategoriami
-  // Inputy jako value mają wartość id kategorii
+  // Pobranie wszystkich kategorii z html (Inputy mają value = category.id)
   const categories = document.querySelectorAll("input[name='categories']");
 
-  // Zaczytanie wszystkich inputów wyboru instytucji
-  // Inputy jako value mają wartość id instytucji
+  // Pobranie wszystkich instytucji z html (Inputy mają value = institution.id)
   const institutions = document.querySelectorAll("input[name='organization']");
 
-  // Ukrycie wszystkich instytucji na start
+  // Ukrycie wszystkich instytucji na start - bo nie zaznaczono żadnych kategorii jeszcze
   for (let institution of institutions) {
-    // institution.parentElement.parentElement.setAttribute("hidden", true);
-  // institution.parentElement.parentElement.style.visibility='hidden'
   institution.parentElement.parentElement.style.display = 'block';
   }
 
+  function checkCategoryInInstitution() {
+    for (let institution of institutions) {
 
+      // Licznik zwiększający swoją wartość jeśli szukana kategoria nie jest akceptowana przez instytucję
+      let counter = 0;
 
+      // Pobranie kategorii, które akceptuje dana instytucja (pobrane z html - wcześniej z ctx)
+      let institutionCategoryNumbers = institution.nextElementSibling.nextElementSibling.firstElementChild.nextElementSibling.innerText
+
+      // Sprawdzenie czy kategoria jest akceptowana przez instytucję - pętla dla wszystkich instytucji
+      for (let element of categoriesList) {
+        if (!institutionCategoryNumbers.includes(element)) {
+          counter += 1;
+        } else {
+        }
+      }
+      if (counter != 0) {
+        // Jeśli counter większy od 0 to ukrywamy instytucję
+        institution.parentElement.parentElement.style.display = 'none';
+
+      } else {
+        // w przeciwnym wypadku pokazujemy instytucję
+        institution.parentElement.parentElement.style.display = 'block';
+      }
+    }
+  }
 
  // Dodanie eventu tworzącego listę z wybranymi przez użytkownika kategoriami
   for (let category of categories) {
     category.addEventListener('change', function () {
+      // Pobranie id kategorii
       const catvalue = this.value;
 
+      // Jeśli zaznaczono kategorię
       if (this.checked) {
-        categoriesList.push(catvalue);
+        categoriesList.push(catvalue); // Lista kategorii zwiększona o id wybranej kategorii
         console.log(categoriesList);
-        // Tutaj będziemy sprawdzać wszystkie instytucje czy zawierają wybrane kategorie (pętla po instytucjach)
-        // Ten kod będzie się powtarzać w przypadku odznaczenia danej kategorii if is not checked - może w funkcję to ubrać
-        for (let institution of institutions) {
-          // Licznik sprawdzający ile kategorii z wybranych będzie występować w danej instytucji
-          // Jeśli counter dla danej insytucji będzie 0 to ukrywamy instytucję
-          let counter = 0;
-          let institutionCategoryNumbers = institution.nextElementSibling.nextElementSibling.firstElementChild.nextElementSibling.innerText
-          // Iteracja sprawdzająca czy jedna kategoria z listy wybranych kategorii zawiera się w liście kategorii danej insystucj
-          for (let element of categoriesList) {
-            if (!institutionCategoryNumbers.includes(element)) {
-              counter += 1;
-            } else {
-            }
-          }
-          if (counter != 0) {
-            // Jeśli counter == 0 to ukrywamy rodzica intsitution - w przeciwny wypadku widoczny
-            console.log("Liczba zaznaczonych kategorii w instytucji:", institution.value, "wynosi:", counter);
-            console.log("Instytucja zniknie z listy");
-            // institution.parentElement.parentElement.style.visibility='hidden'
-            institution.parentElement.parentElement.style.display = 'none';
-            // institution.parentElement.parentElement.setAttribute("hidden", true);
-            // console.log("Atrybut hidden", institution.parentElement.parentElement.hidden);
 
-          } else {
-            console.log("Liczba zaznaczonych kategorii w instytucji:", institution.value, "wynosi:", counter);
-            console.log("Instytucja pojawi się na liście");
-            institution.parentElement.parentElement.style.display = 'block';
-            // institution.parentElement.parentElement.style.visibility='visible'
-            // institution.parentElement.parentElement.setAttribute("hidden", false);
-            // console.log("Atrybut hidden", institution.parentElement.parentElement.hidden);
+        // Sprawdzenie i filtrowanie Instytucji
+        checkCategoryInInstitution();
 
-          }
-        }
-
+      // Jeśli odznaczono kategorię
       } else {
         const arr = categoriesList.filter(function (number) {
           return number !== catvalue;
-        });
-        categoriesList.length = 0;
-        categoriesList.push(...arr);
+        }); // Usunięcie kategorii z listy - stworzenie nowej listy bez danego id
+
+        categoriesList.length = 0; // Wyzerowanie starej listy
+        categoriesList.push(...arr); // Uzupełnienie listy starej o nową (bez odznaczonej kategorii)
         console.log(categoriesList);
 
-        for (let institution of institutions) {
-          // Licznik sprawdzający ile kategorii z wybranych będzie występować w danej instytucji
-          // Jeśli counter dla danej insytucji będzie 0 to ukrywamy instytucję
-          let counter = 0;
-          let institutionCategoryNumbers = institution.nextElementSibling.nextElementSibling.firstElementChild.nextElementSibling.innerText
-          // console.log(institutionCategoryNumbers);
-          // Iteracja sprawdzająca czy jedna kategoria z listy wybranych kategorii zawiera się w liście kategorii danej insystucj
-          for (let element of categoriesList) {
-            if (!institutionCategoryNumbers.includes(element)) {
-              // console.log("Znaleziono");
-              counter += 1;
-            } else {
-              // console.log("Nie znaleziono");
-            }
-          }
-          if (counter != 0) {
-            console.log("Liczba zaznaczonych kategorii w instytucji:", institution.value, "wynosi:", counter);
-            console.log("Instytucja zniknie z listy");
-            institution.parentElement.parentElement.style.display = 'none';
-            // institution.parentElement.parentElement.style.visibility='hidden'
-            // institution.parentElement.parentElement.setAttribute("hidden", true);
-            console.log("Atrybut hidden", institution.parentElement.parentElement.hidden);
-
-          } else {
-            console.log("Liczba zaznaczonych kategorii w instytucji:", institution.value, "wynosi:", counter);
-            console.log("Instytucja pojawi się na liście");
-            institution.parentElement.parentElement.style.display = 'block';
-            // institution.parentElement.parentElement.style.visibility='visible'
-            // institution.parentElement.parentElement.setAttribute("hidden", false);
-            console.log("Atrybut hidden", institution.parentElement.parentElement.hidden);
-          }
-        }
+        // Sprawdzenie i filtrowanie Instytucji
+        checkCategoryInInstitution();
       }
     });
   }
 
-  // do usunięcia
-  // for (let institution of institutions) {
-  //   let institutionCategoryNumbers = institution.nextElementSibling.nextElementSibling.firstElementChild.nextElementSibling.innerText
-  //   console.log(institutionCategoryNumbers);
-  //   for (let element of categoriesList) {
-  //     if (institutionCategoryNumbers.includes(element)) {
-  //       console.log("Znaleziono");
-  //     } else {
-  //       console.log("Nie znaleziono");
-  //     }
-  //   }
-  // }
-
-
+  // Deklaracja zmiennych dla wybranej instytucji
   let chosenInstitutionId = null;
   let chosenInstitutionName = null;
 
-  // Pobranie z formularza instytucji
+  // Pobranie z formularza instytucji (event na klik)
   for (let institution of institutions) {
     institution.addEventListener('change', function () {
       if (this.checked) {
@@ -395,23 +345,19 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
 
-
-    // Pobranie listy wszystkich kategorii - elementy listy to para (lista) danych - id i name
+    // Pobranie listy wszystkich kategorii - elementy listy to para (lista) danych - id i name - nie używane w kodzie
     const fullCategoriesList = []
     for (let category of categories) {
       let el = [category.value, category.nextElementSibling.nextElementSibling.innerText]
       fullCategoriesList.push(el);
     }
-    console.log(fullCategoriesList);
 
 
-  // Event reagujący na kliknięcie buttona "dalej" (dodano id="summary") do podsumowania
-  // Wyszukanie przycisku, przypisanie eventu, pobranie danych z formularza step4
+  // Event dla przycisku "dalej" (dodano id="summary") do podsumowania
   summaryButton = document.querySelector("#summary");
   summaryButton.addEventListener("click", function () {
-    console.log("click")
 
-    // Pobranie elementów z formularza (poza kategoriami i instytucją)
+    // Pobranie elementów z formularza (poza kategoriami i instytucją) i nadpisanie na stronie html
     let address = document.querySelector("input[name='address']").value;
     let city = document.querySelector("input[name='city']").value;
     let postcode = document.querySelector("input[name='postcode']").value;
@@ -440,9 +386,4 @@ document.addEventListener("DOMContentLoaded", function() {
 
   });
 
-
-
-
 });
-  // teraz strzeba sprawdzić czy elementy z listy categoriesList należą do insitutionCategoryNumbers.
-  //  Jeśli żaden element nie należy to zmieniamy styl rodzica inputa na hidden

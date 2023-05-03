@@ -134,6 +134,8 @@ class AddDonation(LoginRequiredMixin, View):
                }
         return render(request, 'form.html', ctx)
 
+    def post(self, request):
+        pass
 
 class Logout(View):
     def get(self, request):
