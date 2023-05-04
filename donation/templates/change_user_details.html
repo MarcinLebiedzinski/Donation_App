@@ -7,9 +7,17 @@
     <header>
       <nav class="container container--70">
         <ul class="nav--actions">
-
-          <li><a href="{% url 'login' %}">Zaloguj</a></li>
-          <li class="highlighted"><a href="{% url 'register' %}">Załóż konto</a></li>
+          <li class="logged-user">
+            Witaj {{ logged_user }}
+            <ul class="dropdown">
+              <li><a href="{% url 'userdetails' %}">Profil</a></li>
+              <li><a href="{% url 'change_user_details' request.user.id %}">Ustawienia</a></li>
+              {% if is_superuser %}
+              <li><a href="http://127.0.0.1:8000/admin/">Panel administracyjny</a></li>
+              {% endif %}
+              <li><a href="{% url 'logout' %}">Wyloguj</a></li>
+            </ul>
+          </li>
         </ul>
 
         <ul>
@@ -22,10 +30,12 @@
       </nav>
     </header>
 
-    <section class="login-page">
-      <h2>Załóż konto</h2>
+
+  <section class="login-page">
+      <h2>Dane użytkownika</h2>
       <form action="" method="post">
-        {% csrf_token %}
+          {% csrf_token %}
+
         <div class="form-group">
           {{ form.first_name }}
         </div>
@@ -38,20 +48,14 @@
           {{ form.email }}
         </div>
 
-        <div class="form-group">
-          {{ form.password }}
-        </div>
-
-        <div class="form-group">
-          {{ form.password_confirmation }}
-        </div>
-
         <div class="form-group form-group--buttons">
-          <a href="{% url 'login' %}" class="btn btn--without-border">Zaloguj się</a>
-          <button class="btn" type="submit">Załóż konto</button>
+          <button class="btn" type="submit">Zapisz</button>
         </div>
       </form>
+
+      <div class="form-group form-group--buttons">
+        <a href="{% url 'change_user_password' request.user.id %}" class="btn btn--without-border"><u>Zmień hasło</u></a>
+      </div>
     </section>
 
 {% endblock %}
-

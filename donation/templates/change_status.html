@@ -1,0 +1,19 @@
+<html>
+<div class="py-2 text-lg-start">
+    <span class="fs-3 fw-semibold"></span>Czy napewno zmienić status? <br>
+
+</div>
+
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.choice.as_hidden }}
+    <input class="btn btn-outline-primary" type="submit" value="Change">
+</form>
+
+<div class="py-4 text-lg-start">
+    <span class="fs-3 fw-semibold"></span>Zrezygnuj<br>
+    <a href="{% url 'userdetails' %}">
+        <button type="button" class="btn btn-outline-primary">Wstecz</button>
+    </a>
+</div>
+<html>
