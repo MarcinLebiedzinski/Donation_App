@@ -24,11 +24,14 @@ from donation_app.views import UserDetails
 from donation_app.views import ChangeDonationStatus
 from donation_app.views import ChangeUserDetails
 from donation_app.views import ChangeUserPassword
+from donation_app.views import FormConfirmation
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', LandingPage.as_view(), name='landing_page'),
     path('add_donation/', AddDonation.as_view(), name='add_donation'),
+    path('form_confirmation/', FormConfirmation.as_view(), name='form_confirmation'),
     path('login/', Login.as_view(), name='login'),
     path('register/', Register.as_view(), name='register'),
     path('logout/', Logout.as_view(), name='logout'),
@@ -37,5 +40,6 @@ urlpatterns = [
     path('changeuserdetails/<int:user_id>/', ChangeUserDetails.as_view(), name='change_user_details'),
     path('changestatus/<int:donation_id>/', ChangeDonationStatus.as_view(), name='changestatus'),
     path('changeuserpassword/<int:user_id>/', ChangeUserPassword.as_view(), name='change_user_password'),
+
 
 ]

@@ -135,7 +135,49 @@ class AddDonation(LoginRequiredMixin, View):
         return render(request, 'form.html', ctx)
 
     def post(self, request):
-        pass
+        quantity = request.POST.get("bags")
+        address = request.POST.get("address")
+        phone_number = request.POST.get('phone')
+        city = request.POST.get('city')
+        zip_code = request.POST.get('postcode')
+        pick_up_date = request.POST.get('data')
+        pick_up_time = request.POST.get('time')
+        pick_up_comment = request.POST.get('more_info')
+        institution_id = request.POST.get("organization")
+        user_id = request.user.id
+        is_taken = False
+        categories = request.POST.getlist('categories')
+        donation = Donation.objects.create(quantity=quantity,
+                                           address=address,
+                                           phone_number=phone_number,
+                                           city=city,
+                                           zip_code=zip_code,
+                                           pick_up_date=pick_up_date,
+                                           pick_up_time=pick_up_time,
+                                           pick_up_comment=pick_up_comment,
+                                           institution_id=institution_id,
+                                           user_id=user_id)
+        for category in categories:
+            cat = Category.objects.get(id=category)
+            donation.categories.add(cat)
+            donation.save()
+
+        ctx = {'quantity': quantity,
+               'address': address,
+               'phone_number': phone_number,
+               'city': city,
+               'zip_code': zip_code,
+               'pick_up_date': pick_up_date,
+               'pick_up_time': pick_up_time,
+               'pick_up_comment': pick_up_comment,
+               'institution_id': institution_id,
+               'user_id': user_id,
+               'is_taken': is_taken,
+               'categories': categories,
+               'logged_user': request.user,
+               }
+        return render(request, 'form-confirmation.html', ctx)
+
 
 class Logout(View):
     def get(self, request):
@@ -252,4 +294,8 @@ class ChangeUserPassword(LoginRequiredMixin, View):
         else:
             return HttpResponse('Coś poszło nie tak')
 
+
+class FormConfirmation(LoginRequiredMixin, View):
+    def get(self, request):
+        return render(request, 'form-confirmation.html')
 
