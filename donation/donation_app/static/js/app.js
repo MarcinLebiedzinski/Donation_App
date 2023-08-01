@@ -385,5 +385,4 @@ document.addEventListener("DOMContentLoaded", function() {
     receiptDate.nextElementSibling.nextElementSibling.innerText = moreInfo;
 
   });
-
 });
